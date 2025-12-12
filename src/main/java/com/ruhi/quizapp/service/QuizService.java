@@ -14,6 +14,7 @@ import com.ruhi.quizapp.dao.QuizDao;
 import com.ruhi.quizapp.model.Question;
 import com.ruhi.quizapp.model.QuestionWrapper;
 import com.ruhi.quizapp.model.Quiz;
+import com.ruhi.quizapp.model.Response;
 
 @Service
 public class QuizService {
@@ -39,5 +40,17 @@ public class QuizService {
 			questionsForUser.add(qw);
 		}
 		return new ResponseEntity<>(questionsForUser,HttpStatus.OK);
+	}
+	public ResponseEntity<Integer> calculateResult(Integer id, List<Response> responses) {
+		Quiz quiz=quizDao.findById(id).get();
+		List<Question> questions=quiz.getQuestions();
+		int rightAns=0,i=0;
+		for(Response response:responses) {
+			if(response.getResponse().equals(questions.get(i).getRightAnswer())) {
+				rightAns++;
+			}
+			i++;
+		}
+		return new ResponseEntity<>(rightAns,HttpStatus.OK);
 	}
 }
